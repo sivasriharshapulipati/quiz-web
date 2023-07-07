@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { resultInitialState } from "../../constants";
 import "./Quiz.scss";
+import AnswerTimer from "../AnswerTimer/AnswerTimer";
 
 const Quiz = ({ questions }) => {
   const [currentQuestion, setcurrentQuestion] = useState(0);
@@ -20,7 +21,7 @@ const Quiz = ({ questions }) => {
     }
   };
 
-  const onClickNext = () => {
+  const onClickNext = (finalAnswer) => {
     setAnswerIdx(null);
     setResult((prev) =>
       answer
@@ -48,10 +49,16 @@ const Quiz = ({ questions }) => {
     setShowResult(false);
   };
 
+  const handleTimeUp = () =>{
+    setAnswer(false);
+    onClickNext
+  }
+
   return (
     <div className="quiz-container">
       {!showResult ? (
         <>
+        <AnswerTimer duration={10} onTimeUp={handleTimeUp}/>
           <span className="active-question-no">{currentQuestion + 1}</span>
           <span className="total-question">/{questions.length}</span>
           <h2>{question}</h2>
@@ -67,7 +74,7 @@ const Quiz = ({ questions }) => {
             ))}
           </ul>
           <div className="footer">
-            <button onClick={onClickNext} disabled={answerIdx === null}>
+            <button onClick={()=>onClickNext(answer)} disabled={answerIdx === null}>
               {currentQuestion === questions.length - 1 ? "Finish" : "Next"}
             </button>
           </div>
