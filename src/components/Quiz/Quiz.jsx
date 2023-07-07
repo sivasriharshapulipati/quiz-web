@@ -10,6 +10,7 @@ const Quiz = ({ questions }) => {
   const [result, setResult] = useState(resultInitialState);
   const [showResult, setShowResult] = useState(false);
 
+  const [showAnswerTimer,setShowAnswerTimer] = useState(true);
   const { question, choices, correctAnswer } = questions[currentQuestion];
 
   const onAnswerClick = (answer, index) => {
@@ -23,8 +24,9 @@ const Quiz = ({ questions }) => {
 
   const onClickNext = (finalAnswer) => {
     setAnswerIdx(null);
+    setShowAnswerTimer(false);
     setResult((prev) =>
-      answer
+      finalAnswer
         ? {
             ...prev,
             score: prev.score + 5,
@@ -42,6 +44,10 @@ const Quiz = ({ questions }) => {
       setcurrentQuestion(0);
       setShowResult(true);
     }
+
+    setTimeout(()=>{
+      setShowAnswerTimer(true);
+    })
   };
 
   const onTryAgain = () => {
@@ -51,14 +57,14 @@ const Quiz = ({ questions }) => {
 
   const handleTimeUp = () =>{
     setAnswer(false);
-    onClickNext
-  }
+    onClickNext(false);
+  };
 
   return (
     <div className="quiz-container">
       {!showResult ? (
         <>
-        <AnswerTimer duration={10} onTimeUp={handleTimeUp}/>
+        {showAnswerTimer && <AnswerTimer duration={10} onTimeUp={handleTimeUp}/>}
           <span className="active-question-no">{currentQuestion + 1}</span>
           <span className="total-question">/{questions.length}</span>
           <h2>{question}</h2>
